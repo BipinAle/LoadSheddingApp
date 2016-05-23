@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -102,50 +103,51 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
 
         int range;
 
-        if (500 > ct) {
+        if (t1 > ct) {
 
-            range = 500 - ct;
+            range = t1 - ct;
             holder.bulbV.setImageResource(R.mipmap.bon);
-            holder.remTime.setText(range + R.string.time_goes_in);
+            holder.remTime.setText("Light goes in"+range);
 
 
         } else if (t1 < ct && t2 >= ct) {
             range = t2 - ct;
             holder.bulbV.setImageResource(R.mipmap.boff);
-            holder.remTime.setText(range +R.string.time_comes_in);
+            holder.remTime.setText("Light comes in"+range);
 
         } else if (t2 <= ct && t3 >= ct) {
             range = t3 - ct;
             holder.bulbV.setImageResource(R.mipmap.bon);
-            holder.remTime.setText(range+R.string.time_goes_in);
+            holder.remTime.setText("Light  goes in"+range);
 
         } else if (t3 <= ct && t4 >= ct) {
             range = t4 - ct;
             holder.bulbV.setImageResource(R.mipmap.boff);
-            holder.remTime.setText(range+R.string.time_comes_in);
+            holder.remTime.setText( "Light comes in"+range);
 
 
         } else {
 
             range = 100;
-            holder.bulbV.setImageResource(R.mipmap.bon);
-            holder.remTime.setText(range + R.string.time_goes_in);
+
 
 
         }
 
-        holder.remTime.setText(range + R.string.time_comes_in);
+        holder.remTime.setText(range+"");
     }
 
 
     private int convertToMinute(String time) {
 
         String hr = time.substring(0, 1);
-        Log.e("hour", hr);
+       int hour= Integer.parseInt(hr);
+
 
         String mn = time.substring(3, 4);
-//        return Integer.parseInt(hr) * 60 + Integer.parseInt(mn);
-        return 0;
+        int minute=Integer.parseInt(mn);
+        return hour * 60 +minute;
+
 
     }
 
