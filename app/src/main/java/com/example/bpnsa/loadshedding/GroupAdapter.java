@@ -59,10 +59,10 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
 
         Calendar calendar = Calendar.getInstance();
         int today = calendar.get(Calendar.DAY_OF_WEEK);
-        if (day.equals(getDayFromNumber(today))) {
+        if (day.equals(Utility.getDayFromNumber(today))) {
 
             holder.dayTv.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
-            holder.dayTv.setTextColor(ContextCompat.getColor(context,android.R.color.white));
+            holder.dayTv.setTextColor(ContextCompat.getColor(context, android.R.color.white));
             calculateTime(position, holder);
 
         }
@@ -73,7 +73,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
         RoutineItem item = data.get(position);
 
 
-        String tFive=data.get(position+1).getTime1().substring(0,5);
+        String tFive = data.get(position + 1).getTime1().substring(0, 5);
 
         String range1 = item.getTime1();//09:00-12:30
         String time1 = range1.substring(0, 5);
@@ -87,20 +87,20 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
 
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String str = sdf.format(new Date());
-        int ct=convertToMinute(str);
-        int t1 = convertToMinute(time1);
-        int t2 = convertToMinute(time2);
-        int t3 = convertToMinute(time3);
-        int t4 = convertToMinute(time4);
-        int t5= convertToMinute(tFive);
+        int ct = Utility.convertToMinute(str);
+        int t1 = Utility.convertToMinute(time1);
+        int t2 = Utility.convertToMinute(time2);
+        int t3 = Utility.convertToMinute(time3);
+        int t4 = Utility.convertToMinute(time4);
+        int t5 = Utility.convertToMinute(tFive);
 
 
-        getStatus(ct, t1, t2, t3, t4, t5,holder,position);
+        getStatus(ct, t1, t2, t3, t4, t5, holder);
 
 
     }
 
-    private void  getStatus(int ct, int t1, int t2, int t3, int t4, int t5, MyViewHolder holder ,int position) {
+    private void getStatus(int ct, int t1, int t2, int t3, int t4, int t5, MyViewHolder holder) {
 
         int range;
 
@@ -114,7 +114,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
             range = t2 - ct;
             holder.bulbV.setImageResource(R.mipmap.boff);
 
-        } else if (t2 < ct && t3 >ct) {
+        } else if (t2 < ct && t3 > ct) {
             range = t3 - ct;
             holder.bulbV.setImageResource(R.mipmap.bon);
 
@@ -122,70 +122,27 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
             range = t4 - ct;
             holder.bulbV.setImageResource(R.mipmap.boff);
 
-        } else if(ct>t4){
+        } else if (ct > t4) {
 
 
             holder.bulbV.setImageResource(R.mipmap.bon);
-            if(ct>t5)
-            {
-               range=24*60-ct+t5;
-            }else{
-                range=t5-ct;
+            if (ct > t5) {
+                range = 24 * 60 - ct + t5;
+            } else {
+                range = t5 - ct;
             }
 
-        }
-        else {
-            range=0;
+        } else {
+            range = 0;
         }
 
-        int hour=range/60;
-        int minute=range%60;
-        holder.remTime.setText(hour+"Hr"+" "+minute+"Min");
-
+        int hour = range / 60;
+        int minute = range % 60;
+        holder.remTime.setText(hour + "Hr" + " " + minute + "Min");
 
 
     }
 
-
-    private int convertToMinute(String time) {//09:30
-
-        String hr = time.substring(0, 2);
-       int hour= Integer.parseInt(hr);
-        String mn = time.substring(3, 5);
-        int minute=Integer.parseInt(mn);
-        return hour * 60 +minute;
-
-    }
-
-    private String getDayFromNumber(int i) {
-        switch (i) {
-            case 1:
-                return "Sunday";
-
-            case 2:
-                return "Monday";
-
-            case 3:
-                return "Tuesday";
-
-            case 4:
-                return "Wednesday";
-
-            case 5:
-                return "Thursday";
-
-            case 6:
-                return "Friday";
-
-            case 7:
-                return "Saturday";
-
-            default:
-                return "";
-
-        }
-
-    }
 
     @Override
     public int getItemCount() {

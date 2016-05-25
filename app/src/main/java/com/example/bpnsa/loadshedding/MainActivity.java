@@ -39,7 +39,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        if(viewPager!=null)
         viewPager.setAdapter(viewPagerAdapter);
+
+        if(tabLayout!=null)
         tabLayout.setupWithViewPager(viewPager);
 
     }
