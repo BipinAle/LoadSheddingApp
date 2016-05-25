@@ -9,9 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -58,7 +61,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
         int today = calendar.get(Calendar.DAY_OF_WEEK);
         if (day.equals(getDayFromNumber(today))) {
 
-            holder.dayTv.setBackgroundColor(ContextCompat.getColor(context, R.color.textbackground));
+            holder.dayTv.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+            holder.dayTv.setTextColor(ContextCompat.getColor(context,android.R.color.white));
             calculateTime(position, holder);
 
         }
@@ -69,34 +73,34 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
         RoutineItem item = data.get(position);
 
 
+        String tFive=data.get(position+1).getTime1().substring(0,5);
+
         String range1 = item.getTime1();//09:00-12:30
         String time1 = range1.substring(0, 5);
-        Log.e("time111", time1);//09:00
         String time2 = range1.substring(6, 11);
-        Log.e("time122", time2);//12:30
+
 
         String range2 = item.getTime2();//09:00-12:30
         String time3 = range2.substring(0, 5);//(0,5]..
         String time4 = range2.substring(6, 11);
 
 
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR);
-        int minute = calendar.get(Calendar.MINUTE);
-
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        String str = sdf.format(new Date());
+        int ct=convertToMinute(str);
         int t1 = convertToMinute(time1);
         int t2 = convertToMinute(time2);
         int t3 = convertToMinute(time3);
         int t4 = convertToMinute(time4);
-        int ct = hour * 60 + minute;
+        int t5= convertToMinute(tFive);
 
 
-        getStatus(ct, t1, t2, t3, t4, holder);
+        getStatus(ct, t1, t2, t3, t4, t5,holder,position);
 
 
     }
 
-    private void  getStatus(int ct, int t1, int t2, int t3, int t4, MyViewHolder holder) {
+    private void  getStatus(int ct, int t1, int t2, int t3, int t4, int t5, MyViewHolder holder ,int position) {
 
         int range;
 
@@ -106,28 +110,37 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
             holder.bulbV.setImageResource(R.mipmap.bon);
 
 
-        } else if (t1 < ct && t2 >= ct) {
+        } else if (t1 < ct && t2 > ct) {
             range = t2 - ct;
             holder.bulbV.setImageResource(R.mipmap.boff);
 
-        } else if (t2 <= ct && t3 >= ct) {
+        } else if (t2 < ct && t3 >ct) {
             range = t3 - ct;
             holder.bulbV.setImageResource(R.mipmap.bon);
 
-        } else if (t3 <= ct && t4 >= ct) {
+        } else if (t3 < ct && t4 > ct) {
             range = t4 - ct;
             holder.bulbV.setImageResource(R.mipmap.boff);
 
-        } else {
-
-            range = 100;
+        } else if(ct>t4){
 
 
+            holder.bulbV.setImageResource(R.mipmap.bon);
+            if(ct>t5)
+            {
+               range=24*60-ct+t5;
+            }else{
+                range=t5-ct;
+            }
 
         }
+        else {
+            range=0;
+        }
+
         int hour=range/60;
         int minute=range%60;
-        holder.remTime.setText(hour+"Hr"+" "+minute+"Min"+" "+"Left");
+        holder.remTime.setText(hour+"Hr"+" "+minute+"Min");
 
 
 
@@ -137,10 +150,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
     private int convertToMinute(String time) {//09:30
 
         String hr = time.substring(0, 2);
-
        int hour= Integer.parseInt(hr);
-
-
         String mn = time.substring(3, 5);
         int minute=Integer.parseInt(mn);
         return hour * 60 +minute;
