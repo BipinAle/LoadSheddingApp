@@ -4,7 +4,6 @@
     <item
         android:title="setting"
         app:showAsAction="never"
-        android:onClick="setting"
         android:id="@+id/setting"/>
 
 </menu>

@@ -8,13 +8,7 @@
     android:orientation="vertical"
     tools:context="com.example.bpnsa.loadshedding.MainActivity">
 
-  <!--  <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rvContainer"
-   >
-
-    </android.support.v7.widget.RecyclerView>
+  <!--
     -->
 
     <android.support.design.widget.AppBarLayout

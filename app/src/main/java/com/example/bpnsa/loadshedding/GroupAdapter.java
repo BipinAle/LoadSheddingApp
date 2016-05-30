@@ -1,6 +1,7 @@
 package com.example.bpnsa.loadshedding;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -53,8 +54,34 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
 
         RoutineItem item = data.get(position);
         String day = item.getDay();
-        holder.dayTv.setText(day);
-        holder.timeTv.setText(item.getTime1() + "\n" + item.getTime2());
+        int time1=Integer.parseInt(item.getTime1().substring(0,2));
+        int time2=Integer.parseInt(item.getTime1().substring(6,8));
+        int time3=Integer.parseInt(item.getTime2().substring(0,2));
+        int time4=Integer.parseInt(item.getTime2().substring(6,8));
+
+
+
+
+        holder.dayTv.setText(day.substring(0,3));
+        if(time1>12)
+        {
+            time1=time1-12;
+        }
+        if(time2>12)
+        {
+            time2=time2-12;
+        }
+        if(time3>12)
+        {
+            time3=time3-12;
+
+        }
+        if(time4>12)
+        {
+            time4=time4-12;
+        }
+
+        holder.timeTv.setText(time1+""+item.getTime1().substring(2,5)+"  "+time2+""+item.getTime1().substring(8,11)+"\n"+time3+""+item.getTime2().substring(2,5)+"  "+time4+""+item.getTime2().substring(8,11));
 
 
         Calendar calendar = Calendar.getInstance();
@@ -63,6 +90,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
 
             holder.dayTv.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
             holder.dayTv.setTextColor(ContextCompat.getColor(context, android.R.color.white));
+            holder.dayTv.setTypeface(Typeface.DEFAULT_BOLD);
+            holder.dayTv.setTextSize(22f);
             calculateTime(position, holder);
 
         }
@@ -129,8 +158,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
             if (ct > t5) {
                 range = 24 * 60 - ct + t5;
             } else {
-                range = t5 - ct;
-            }
+                    range = t5 - ct;
+                }
 
         } else {
             range = 0;
@@ -138,7 +167,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
 
         int hour = range / 60;
         int minute = range % 60;
-        holder.remTime.setText(hour + "Hr" + " " + minute + "Min");
+
+            holder.remTime.setText(hour + "Hr" + " " + minute + "Min");
+
 
 
     }

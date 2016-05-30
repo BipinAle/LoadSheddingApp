@@ -1,11 +1,15 @@
 package com.example.bpnsa.loadshedding;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,8 +19,10 @@ import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
+    public static final String DEFAULT = "N/A";
 
     private String groupname[] = {"Group 1", "Group 2", "Group 3", "Group 4", "Group 5", "Group 6", "Group 7"};
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -32,41 +38,54 @@ public class MainActivity extends AppCompatActivity {
 
             GroupFragment gf = new GroupFragment();
             Bundle b = new Bundle();
-            b.putInt("gid", i+1);
+            b.putInt("gid", i + 1);
             gf.setArguments(b);
-
             viewPagerAdapter.addFragmentAndTitle(gf, groupname[i]);
         }
 
 
-        if(viewPager!=null)
-        viewPager.setAdapter(viewPagerAdapter);
+        if (viewPager != null)
+            viewPager.setAdapter(viewPagerAdapter);
 
-        if(tabLayout!=null)
-        tabLayout.setupWithViewPager(viewPager);
+        if (tabLayout != null)
+            tabLayout.setupWithViewPager(viewPager);
+
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SharedPreferences sharedPreferences = getSharedPreferences("GroupNumber", Context.MODE_PRIVATE);
+        String number = sharedPreferences.getString("position", DEFAULT);
+        if(number.equals(DEFAULT))
+        {
+            Toast.makeText(MainActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            viewPager.setCurrentItem(Integer.parseInt(number));
+        }
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater=getMenuInflater();
-        inflater.inflate(R.menu.menu,menu);
-        return true;
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.setting)
-        {
 
-            setting(item);
+        switch (item.getItemId()) {
+            case R.id.setting:
+
+                startActivity(new Intent(this, PopUp.class));
+                return true;
 
         }
-        return  true;
-    }
 
-    public void setting(MenuItem item)
-    {
+        return super.onOptionsItemSelected(item);
 
     }
 

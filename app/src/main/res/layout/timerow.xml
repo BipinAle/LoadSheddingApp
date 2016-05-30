@@ -11,21 +11,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="9dp"
+    android:layout_margin="5dp"
   >
 
     <TextView
         android:id="@+id/day"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="40dp"
-        android:layout_gravity="center_vertical"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_weight=".7"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:textColor="@android:color/black"
-        android:layout_marginRight="30dp"
-        android:text="dummyday"
-       />
+        android:text="dummytime"
+        android:layout_marginRight="40dp"
+        />
 
     <TextView
         android:id="@+id/time"
