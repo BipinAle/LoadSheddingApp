@@ -1,6 +1,7 @@
 package com.example.bpnsa.loadshedding;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +38,10 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
     public void setData(ArrayList<RoutineItem> data) {
 
         this.data = data;
+
         notifyItemRangeChanged(0, data.size());
+
+
     }
 
 

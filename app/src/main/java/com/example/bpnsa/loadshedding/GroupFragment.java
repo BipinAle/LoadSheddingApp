@@ -1,6 +1,8 @@
 package com.example.bpnsa.loadshedding;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -30,9 +33,11 @@ import java.util.ArrayList;
  */
 public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private int gid;
+    RecyclerView recyclerView;
     private SwipeRefreshLayout pullToRef;
-    private static final String URL="https://raw.githubusercontent.com/BipinAle/LoadsheddingRoutine/master/Lroutine.json";
+    private static final String URL = "https://raw.githubusercontent.com/BipinAle/LoadsheddingRoutine/master/Lroutine.json";
     private GroupAdapter gAdapter;
+    private static final String RESPONSE_TAG="response";
 
     public GroupFragment() {
         // Required empty public constructor
@@ -49,21 +54,20 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=  inflater.inflate(R.layout.fragment_group, container, false);
+        View view = inflater.inflate(R.layout.fragment_group, container, false);
 
         pullToRef = (SwipeRefreshLayout) view.findViewById(R.id.swipeToRefresh);
         pullToRef.setOnRefreshListener(this);
 
         gAdapter = new GroupAdapter(getContext());
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rc);
+        recyclerView = (RecyclerView) view.findViewById(R.id.rc);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(gAdapter);
 
         sendJSONRequest();
-        return  view;
+        return view;
     }
-
 
 
     @Override
@@ -77,7 +81,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
 
         enableProgress();
-        final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,URL
+        final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, URL
                 ,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -88,6 +92,12 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                             disableProgress();
                             ArrayList<RoutineItem> data = parseData(response);//whole arraylist
                             gAdapter.setData(filterGroup(data, gid));
+
+                                SharedPreferences.Editor editor = getSharedPref().edit();
+                                editor.putString(RESPONSE_TAG, response.toString());
+                                editor.apply();
+
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -103,8 +113,23 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     public void onErrorResponse(VolleyError error) {
                         disableProgress();
 
-                        error.printStackTrace();
-                        Toast.makeText(getActivity(), "something went wrong ", Toast.LENGTH_LONG).show();
+
+
+                        String response = getSharedPref().getString(RESPONSE_TAG, "N/A");
+                        if (response.equals("N/A")) {
+                        } else {
+
+                            ArrayList<RoutineItem> data = null;//whole arraylist
+                            try {
+                                
+                                data = parseData(new JSONObject(response));
+                                gAdapter.setData(filterGroup(data, gid));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
 
                     }
                 }
@@ -181,5 +206,10 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onRefresh() {
         sendJSONRequest();
+    }
+
+    private SharedPreferences getSharedPref(){
+
+        return getContext().getSharedPreferences("Mydata", Context.MODE_PRIVATE);
     }
 }
